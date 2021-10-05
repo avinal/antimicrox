@@ -72,6 +72,7 @@ class UInputEventHandler : public BaseEventHandler
     int mouseFileHandler;
     int springMouseFileHandler;
     QString uinputDeviceLocation;
+    bool is_problem_with_opening_uinput_present;
 
     bool cleanupUinputEvHand();
     void testAndAppend(bool tested, QList<unsigned int> &tempList, unsigned int key);

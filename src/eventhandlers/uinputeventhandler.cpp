@@ -24,6 +24,7 @@
 
 #include <QDebug>
 #include <QFileInfo>
+#include <QMessageBox>
 #include <QStringList>
 #include <QStringListIterator>
 #include <QTimer>
@@ -49,6 +50,7 @@ static const QString springMouseDeviceName = PadderCommon::springMouseDeviceName
 
 UInputEventHandler::UInputEventHandler(QObject *parent)
     : BaseEventHandler(parent)
+    , is_problem_with_opening_uinput_present(false)
 {
     keyboardFileHandler = 0;
     mouseFileHandler = 0;
@@ -319,6 +321,7 @@ int UInputEventHandler::openUInputHandle()
             lastErrorString = tr("Could not open uinput device file\n"
                                  "Please check that you have permission to write to the device");
             lastErrorString.append(": ").append(possibleLocation).append('\n');
+            is_problem_with_opening_uinput_present = true;
         } else
         {
             uinputDeviceLocation = possibleLocation;
@@ -480,6 +483,15 @@ void UInputEventHandler::printPostMessages()
     if (!lastErrorString.isEmpty())
     {
         PRINT_STDERR() << lastErrorString;
+        if (is_problem_with_opening_uinput_present)
+        {
+            QMessageBox msgBox;
+            msgBox.setText(tr("Unable to open uinput files, this may cause problems with generating events.\nTo check "
+                              "possible solutions please visit: ")
+                               .append("https://github.com/AntiMicroX/antimicrox/wiki/Open-uinput-error"));
+            msgBox.setDetailedText(lastErrorString);
+            msgBox.exec();
+        }
     }
 
     if (!uinputDeviceLocation.isEmpty())
