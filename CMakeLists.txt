@@ -26,6 +26,9 @@ if(POLICY CMP0071)
     cmake_policy(SET CMP0071 NEW)
 endif()
 
+set(CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.12.11\\5.12.11\\mingw73_64")
+set(CMAKE_INSTALL_PREFIX "C:/Users/pawel/installantimicrox") 
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" "${CMAKE_ROOT}/Modules")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -686,8 +689,30 @@ It is a new fork of discontinued AntiMicro.")
             COMMAND strip --strip-unneeded --remove-section=.comment --remove-section=.note "${CMAKE_CURRENT_BINARY_DIR}/bin/antimicrox" VERBATIM)
 endif()
 
+if(WIN32 AND NOT UNIX)
+    # We set NSIS as generator for Windows
+    
+    set(CPACK_GENERATOR NSIS)
+    # There is a bug in NSI that does not handle full UNIX paths properly.
+    # Make sure there is at least one set of four backlashes.
+    set(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}\\\\src/icons/antimicrox.ico")
+    set(CPACK_NSIS_INSTALLED_ICON_NAME "${CPACK_PACKAGE_ICON}")
+    set(CPACK_NSIS_DISPLAY_NAME "AntiMicroX Windows Installer")
+    set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\github.com/AntiMicroX/antimicrox")
+    set(CPACK_NSIS_MODIFY_PATH ON)
+
+endif()
+
+
 set(CPACK_PACKAGE_EXECUTABLES "antimicrox" "antimicrox")
 include(CPack)
+
+if(WIN32 AND NOT UNIX)
+configure_file(
+    ${PROJECT_SOURCE_DIR}/cmake/modules/NSIS.definitions.nsh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/assets/nsis/NSIS.definitions.nsh
+    )
+endif()
 
 
 ###############################
