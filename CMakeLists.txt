@@ -746,6 +746,7 @@ endif()
 if(WIN32 AND NOT UNIX)
     # We set NSIS as generator for Windows
     set(CPACK_GENERATOR NSIS)
+    set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
 
     # There is a bug in NSI that does not handle full UNIX paths properly.
     # Make sure there is at least one set of four backlashes.

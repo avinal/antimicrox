@@ -139,7 +139,9 @@ jobs:
                   CMAKE_PREFIX_PATH: ${{env.Qt5_Dir}}
 
             - name: Build Installer
-              run: cmake --build '${{ github.workspace }}'/build --target package --parallel 8
+              run: |
+                cmake --build '${{ github.workspace }}'/build --target package --parallel 8
+                type D:/a/antimicrox/antimicrox/build/_CPack_Packages/win64/NSIS/NSISOutput.log
 
             - name: Upload binaries to release
               uses: AButler/upload-release-assets@v2.0
