@@ -139,7 +139,17 @@ jobs:
                   CMAKE_PREFIX_PATH: ${{env.Qt5_Dir}}
 
             - name: Build Installer
-              run: cmake --build '${{ github.workspace }}'/build --target package --parallel 8
+              id: build_installer
+              run: |
+                  cmake --build '${{ github.workspace }}'/build --target package --parallel 8
+                  type D:/a/antimicrox/antimicrox/build/_CPack_Packages/win64/NSIS/NSISOutput.log
+
+            - name: Upload logs in case of failure
+              if: ${{ steps.build_installer.outcome }} == 'failure'
+              uses: actions/upload-artifact@v2
+              with:
+                  name: logs
+                  path: D:/a/antimicrox/antimicrox/build/_CPack_Packages/win64/NSIS/NSISOutput.log
 
             - name: Upload binaries to release
               uses: AButler/upload-release-assets@v2.0
